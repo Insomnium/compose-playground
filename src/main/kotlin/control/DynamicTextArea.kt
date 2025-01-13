@@ -1,29 +1,49 @@
 package control
 
 import androidx.compose.foundation.border
+import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import java.util.UUID
 
 @Composable
-fun DynamicTextArea(content: TextAreaContent) {
+fun DynamicTextArea(
+    content: TextAreaContent,
+    width: Dp = 100.dp,
+    height: Dp = 100.dp,
+) {
+
+    var offsetX by remember { mutableStateOf(0f) }
+    var offsetY by remember { mutableStateOf(0f) }
 
     val text = remember { mutableStateOf(content.text)  }
     TextField(
         value = text.value,
         onValueChange = { text.value = it }, modifier = Modifier
-            .fillMaxWidth()
-            .height(100.dp)
+            .pointerInput(Unit) {
+                detectDragGestures { change, dragAmount ->
+                    offsetX += dragAmount.x
+                    offsetY += dragAmount.y
+                }
+            }
+//            .fillMaxWidth()
+            .width(width)
+            .height(height)
             .offset(content.offset.x.dp, content.offset.y.dp)
             .border(width = 1.dp, color = Color.Black, shape = RoundedCornerShape(8.dp))
     )
