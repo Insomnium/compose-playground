@@ -1,6 +1,6 @@
 package state
 
-import control.TextAreaContent
+import composeable.TextAreaContent
 import java.util.UUID
 
 data class StateContext(private val textAreas: MutableList<TextAreaContent> = mutableListOf()) {
